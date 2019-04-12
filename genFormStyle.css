@@ -43,21 +43,21 @@ header
 {
 	margin-left: 2%;
 }
-#index
+.selected
 {
-	position: absolute;
-	right: -8%;
-	top: 35%;
-	width: 8%;
-	height: 35%;
+	border: 1px #b3b3b3 solid;
+	border-radius: 0px 0px 0px 0px ;
+	box-shadow: 1px 1px 5px 2px #b3b3b3;
 }
-.plus , .sautPlus
+.plus 
 {
 	height: 50px;
 	width: 50px;
 	position: relative;
 	left: 15px;
 	top: 7px;
+	border: 1px #b3b3b3 solid;
+	border-radius: 3px/3px;
 }
 .plus:hover
 {
@@ -70,6 +70,10 @@ header
 {
 	box-shadow: 0px 0px  #fff;
 }
+.plus-show
+{
+	display: none;
+}
 #genForm
 {
 	height: 470px;
@@ -78,7 +82,7 @@ header
 	background-color: #f6ecff;
 	border: 2px #decfff solid;
 	border-radius: 5px/8px;
-	position: absolute;
+	position: fixed;
 	right: 2px;
 }
 #modification

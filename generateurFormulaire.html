@@ -18,28 +18,27 @@
 						<p>Question 1 : </p>
 						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>
 					</div>
-					<img src="../icons/plus-solid.svg" class="plus"> <br class="sautPlus"><br class="sautPlus">
-				</div>
-				<div class="modif">
-					<div class="champs">
-						<p>Question 1 : </p>
-						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>
+					<div class="plus-show">
+						<img src="../icons/plus-solid.svg" class="plus"> <br><br>	
 					</div>
-					<img src="../icons/plus-solid.svg" class="plus"> <br class="sautPlus"><br class="sautPlus">	
-				</div>			
-				<button type="reset" class="btn btn-primary " >Envoyer</button>
-				<button type="reset" class="btn btn-primary btn-new" >Reset</button>
+				</div>						
 			</form>
 		</section>
 		<section id="genForm" class="col-md-4 col-sm-12">
-			<form>
+			<form class="form-horizontal">
 				<select class="form-control">
-					<option>Input</option>
+					<option>Text input</option>
+					<option>Text area</option>
 					<option>Radio</option>
 					<option>Checkbox</option>
 					<option>Select</option>
-					<option>Button</option>
-				</select>
+				</select> <br>
+				<div class="row form-group">
+				  <label class="col-4 control-label" for="textinput">Text Input :</label>  
+				  <div class="col-8">
+				  <input id="textinput" name="textinput" type="text" class="form-control">
+				  </div>
+				</div>
 			</form>
 			<div class="row" id="modification">
 				<div class="col-md-4 col-sm-6">
