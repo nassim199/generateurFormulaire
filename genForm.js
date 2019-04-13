@@ -1,21 +1,23 @@
-var champs,plus,modif,nouveauModif;
+var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif;
 var i,k,j,l,m;
 var selected=[true],newChamp=[true];
-
+legend=document.getElementById('legend');
+legendInput=document.getElementById('legendInput');
+legendModif=document.getElementById('legendModif');
 function insertAfter(newElement, afterElement) {
     var parent = afterElement.parentNode;
 	
-    if (parent.lastChild === afterElement) { // Si le dernier élément est le même que l'élément après lequel on veut insérer, il suffit de faire appendChild()
+    if (parent.lastElementChild === afterElement) { // Si le dernier élément est le même que l'élément après lequel on veut insérer, il suffit de faire appendChild()
         parent.appendChild(newElement);
     } else { // Dans le cas contraire, on fait un insertBefore() sur l'élément suivant
-        parent.insertBefore(newElement, afterElement.nextSibling);
+        parent.insertBefore(newElement, afterElement.nextElementSibling);
     }
 }
 function NouveauModif() {
 	var nouveau ;
 	nouveau = document.createElement('div');
 	nouveau.classList.add('modif');
-	nouveau.innerHTML='					<div class="champs">\n						<p>Question 1 : </p>\n						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>\n					</div>\n					<div class="plus-show">\n						<img src="../icons/plus-solid.svg" class="plus"> <br><br>\n					</div>'
+	nouveau.innerHTML='\n					<div class="champs">\n						<p>Question 1 : </p>\n						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>\n					</div>\n					<div class="plus-show">\n						<img src="../icons/plus-solid.svg" class="plus"> <br><br>\n					</div>'
 	return nouveau;
 }
 function selectable() {
@@ -27,6 +29,7 @@ function selectable() {
 		champs[i].addEventListener('click',function(){
 			this.classList.add('selected');
 			this.nextElementSibling.style.display='block';
+			genForm.show(400);
 			for (j = 0; j < l; j++) {
 				if (this!==champs[j] ){
 					champs[j].classList.remove('selected');
@@ -58,7 +61,7 @@ function addChamp(newChamp) {
 			newChamp[i]=false;
 			plus[i].addEventListener('click',function(){
 				nouveauModif=NouveauModif();
-				insertAfter(nouveauModif,this.parentNode);
+				insertAfter(nouveauModif,this.parentNode.parentNode);
 				plus=document.querySelectorAll('.plus');
 				m=plus.length;
 				newChamp.push(false);
@@ -77,4 +80,42 @@ function addChamp(newChamp) {
 	}
 }
 displaySelected();
+selectable();
 addChamp(newChamp);
+document.getElementById('warning').addEventListener('click',function(){
+	for ( i = 0; i < selected.length; i++) {
+		selected[i]=false;
+	}
+	displaySelected();
+	genForm.hide(400);
+});
+document.getElementById('danger').addEventListener('click',function(){
+	modif=document.querySelectorAll('.modif');
+	i=0;
+	while(!selected[i]) i++;
+	modif[i].remove();
+	selected.shift();
+	for (i = 0; i < selected.length; i++) {
+		selected[i]=false;
+	}
+	genForm.hide(400);
+	displaySelected();
+	selectable();
+});
+document.getElementById('info').addEventListener('click',function(){
+	alert(document.getElementById('selectable').innerHTML);
+});
+legend.addEventListener('click',function(){
+	legendInput.value=legend.innerHTML;
+	legendModif.style.display='block';
+	legendInput.onfocus();
+});
+document.getElementById('save').addEventListener('click',function(e){
+	e.preventDefault();
+	legend.innerHTML=legendInput.value;
+	legendModif.style.display='none';
+});
+document.getElementById('cancel').addEventListener('click',function(e){
+	e.preventDefault();
+	legendModif.style.display='none';
+});

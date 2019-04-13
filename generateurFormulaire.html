@@ -13,6 +13,12 @@
 	<div class="row" id="corps">
 		<section id="form" class="col-md-8">
 			<form id="selectable" method="post" action="traitement.php">
+				<label for="legendInput" id="legend">Titre du formulaire</label> 
+				<div id="legendModif" class="form-inline ">
+					<input type="text" name="legendInput" class="form-control col-8" id="legendInput" >
+					<button class="btn btn-info" id="save">save</button>
+					<button class="btn btn-warning " id="cancel">cancel</button>
+				</div>
 				<div class="modif">
 					<div class="champs">
 						<p>Question 1 : </p>
@@ -42,10 +48,10 @@
 			</form>
 			<div class="row" id="modification">
 				<div class="col-md-4 col-sm-6">
-					<button class="btn btn-info">save</button>
+					<button class="btn btn-info" id="info">save</button>
 				</div>
 				<div class="col-md-4 col-sm-6">
-					<button class="btn btn-danger">delete</button>
+					<button class="btn btn-danger" id="danger">delete</button>
 				</div>
 				<div class="col-md-4 col-sm-6">
 					<button class="btn btn-warning" id="warning">cancel</button>

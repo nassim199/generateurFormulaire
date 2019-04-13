@@ -17,16 +17,30 @@ header
 	width: 100%;
 	z-index: 1;
 }
+body 
+{
+	background-color: #fefff0;
+}
 #corps
 {
 	display: flex;
 	margin-top: 100px;
-	background-color: #fefff0;
+	
 }
 #form
 {
 	width: 70%;
 	padding: 3%;
+}
+#legend
+{
+	font-size: 1.6em;
+}
+#legendModif
+{
+	display: none;
+	position: relative;
+	bottom: 40px;
 }
 .champs
 {
