@@ -32,15 +32,20 @@ body
 	width: 70%;
 	padding: 3%;
 }
-#legend
+#legendInput
 {
-	font-size: 1.6em;
+	display: inline-block;
+	width: 60%;
 }
 #legendModif
 {
 	display: none;
 	position: relative;
 	bottom: 40px;
+}
+.modif
+{
+	position: relative;
 }
 .champs
 {
@@ -56,6 +61,10 @@ body
 .champs input
 {
 	margin-left: 2%;
+}
+label
+{
+	display: inline;
 }
 .selected
 {
@@ -85,6 +94,26 @@ body
 	box-shadow: 0px 0px  #fff;
 }
 .plus-show
+{
+	display: none;
+}
+.cross
+{
+	cursor: pointer;
+	position: absolute;
+	top: -6px;
+	right: 2px;
+	width: 25px;
+	height: 25px;
+}
+.cross:hover 
+{
+	width: 27px;
+	height: 27px;
+	top: -7px;
+	right: 1px;
+}
+.cross-show
 {
 	display: none;
 }

@@ -13,8 +13,8 @@
 	<div class="row" id="corps">
 		<section id="form" class="col-md-8">
 			<form id="selectable" method="post" action="traitement.php">
-				<label for="legendInput" id="legend">Titre du formulaire</label> 
-				<div id="legendModif" class="form-inline ">
+				<legend id="legend">Titre du formulaire</legend>
+				<div id="legendModif" class="form-inline">
 					<input type="text" name="legendInput" class="form-control col-8" id="legendInput" >
 					<button class="btn btn-info" id="save">save</button>
 					<button class="btn btn-warning " id="cancel">cancel</button>
@@ -22,10 +22,13 @@
 				<div class="modif">
 					<div class="champs">
 						<p>Question 1 : </p>
-						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>
+						<label><input type="radio" name="default">	Option1 </label>
 					</div>
 					<div class="plus-show">
 						<img src="../icons/plus-solid.svg" class="plus"> <br><br>	
+					</div>
+					<div class="cross-show">
+						<img src="../icons/times-circle-solid.svg" class="cross">
 					</div>
 				</div>						
 			</form>

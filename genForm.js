@@ -1,9 +1,10 @@
-var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif;
+var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif,cross;
 var i,k,j,l,m;
 var selected=[true],newChamp=[true];
 legend=document.getElementById('legend');
 legendInput=document.getElementById('legendInput');
 legendModif=document.getElementById('legendModif');
+
 function insertAfter(newElement, afterElement) {
     var parent = afterElement.parentNode;
 	
@@ -17,7 +18,7 @@ function NouveauModif() {
 	var nouveau ;
 	nouveau = document.createElement('div');
 	nouveau.classList.add('modif');
-	nouveau.innerHTML='\n					<div class="champs">\n						<p>Question 1 : </p>\n						<input type="radio" name="default" id="default">	<label for="default">Option 1</label>\n					</div>\n					<div class="plus-show">\n						<img src="../icons/plus-solid.svg" class="plus"> <br><br>\n					</div>'
+	nouveau.innerHTML='\n					<div class="champs">\n						<p>Question 1 : </p>\n						<label><input type="radio" name="default">	Option 1</label>\n					</div>\n					<div class="plus-show">\n						<img src="../icons/plus-solid.svg" class="plus"> <br><br>\n					</div>\n					<div class="cross-show">\n						<img src="../icons/times-circle-solid.svg" class="cross">\n					</div>'
 	return nouveau;
 }
 function selectable() {
@@ -29,11 +30,13 @@ function selectable() {
 		champs[i].addEventListener('click',function(){
 			this.classList.add('selected');
 			this.nextElementSibling.style.display='block';
+			this.nextElementSibling.nextElementSibling.style.display='block';
 			genForm.show(400);
 			for (j = 0; j < l; j++) {
 				if (this!==champs[j] ){
 					champs[j].classList.remove('selected');
 					champs[j].nextElementSibling.style.display='none';
+					champs[j].nextElementSibling.nextElementSibling.style.display='none';
 					selected[j]=false;
 				} else selected[j]=true;
 			}
@@ -45,10 +48,12 @@ function displaySelected() {
 		for (j = 0; j < champs.length; j++) {
 			if (selected[j] ){
 			champs[j].classList.add('selected');
-			champs[j].nextElementSibling.style.display='block';				
+			champs[j].nextElementSibling.style.display='block';		
+			champs[j].nextElementSibling.nextElementSibling.style.display='block';		
 			} else {
 				champs[j].classList.remove('selected');
 				champs[j].nextElementSibling.style.display='none';
+				champs[j].nextElementSibling.nextElementSibling.style.display='none';
 			}
 		}
 };
@@ -74,13 +79,30 @@ function addChamp(newChamp) {
 				selected[j]=true;
 				selectable();
 				addChamp(newChamp);
+				addDelete();
 				displaySelected();
 			});
 		}
 	}
 }
+function addDelete(){
+	cross=document.querySelectorAll('.cross');
+	for (var i = 0; i < cross.length; i++) {
+		cross[i].addEventListener('click',function(){
+			this.parentNode.parentNode.remove();
+			selected.shift();
+			for (j = 0; j < selected.length; j++) {
+				selected[j]=false;
+			}
+			genForm.hide(400);
+			displaySelected();
+			selectable();
+		});
+	}
+}
 displaySelected();
 selectable();
+addDelete();
 addChamp(newChamp);
 document.getElementById('warning').addEventListener('click',function(){
 	for ( i = 0; i < selected.length; i++) {
@@ -103,12 +125,12 @@ document.getElementById('danger').addEventListener('click',function(){
 	selectable();
 });
 document.getElementById('info').addEventListener('click',function(){
-	alert(document.getElementById('selectable').innerHTML);
+	
 });
 legend.addEventListener('click',function(){
 	legendInput.value=legend.innerHTML;
 	legendModif.style.display='block';
-	legendInput.onfocus();
+	legendInput.select();
 });
 document.getElementById('save').addEventListener('click',function(e){
 	e.preventDefault();
