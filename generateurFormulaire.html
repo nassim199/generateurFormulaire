@@ -5,6 +5,7 @@
 	<title>generateur formulaire</title>
 	<link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="genFormStyle.css">
+	<link rel="icons" href="../icons/angle-left-solid.svg">
 </head>
 <body>
 	<header>
@@ -30,31 +31,50 @@
 					<div class="cross-show">
 						<img src="../icons/times-circle-solid.svg" class="cross">
 					</div>
-				</div>						
+				</div>					
 			</form>
 		</section>
 		<section id="genForm" class="col-md-4 col-sm-12">
 			<form class="form-horizontal">
-				<select class="form-control">
+				<select class="form-control" id="selectChamp">
 					<option>Text input</option>
+					<option>Input</option>
 					<option>Text area</option>
 					<option>Radio</option>
 					<option>Checkbox</option>
 					<option>Select</option>
+					<option>Button</option>
 				</select> <br>
-				<div class="row form-group">
-				  <label class="col-4 control-label" for="textinput">Text Input :</label>  
-				  <div class="col-8">
-				  <input id="textinput" name="textinput" type="text" class="form-control">
-				  </div>
+				<div>
+					<div class="form-group row">
+						<label for="question" class="col-form-label col-4">Question :</label>
+						<div class="col-8">
+							<input type="text" name="question" id="question" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="name" class="col-form-label col-4">Name :</label>
+						<div class="col-8">
+							<input type="text" name="name" id="name" class="form-control">
+						</div>
+					</div>							
+					<img src="../icons/angle-left-solid.svg" id="left">
+					<img src="../icons/angle-left-clair.svg" id="leftClair">					
+					<img src="../icons/minus-solid.svg" id="minus">
+					<img src="../icons/minus-clair.svg" id="minusClair">					
+					<img src="../icons/angle-right-solid.svg" id="right">
+					<img src="../icons/plus-solid-black.svg" id="plusBlack">
+					<div class="form-group option row">
+						<label for="Option1" class="col-form-label col-4">Option 01 :</label>
+						<div class=" col-8">
+							<input type="text" name="Option1" id="Option1" class="form-control">
+						</div>
+					</div>			
 				</div>
 			</form>
 			<div class="row" id="modification">
 				<div class="col-md-4 col-sm-6">
 					<button class="btn btn-info" id="info">save</button>
-				</div>
-				<div class="col-md-4 col-sm-6">
-					<button class="btn btn-danger" id="danger">delete</button>
 				</div>
 				<div class="col-md-4 col-sm-6">
 					<button class="btn btn-warning" id="warning">cancel</button>

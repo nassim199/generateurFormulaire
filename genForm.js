@@ -1,9 +1,15 @@
-var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif,cross;
+
+//declaration de variables et initialisation
+
+var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif,cross,edit,genFormM,conf,selectChamp;
 var i,k,j,l,m;
-var selected=[true],newChamp=[true];
+var selected=[true],newChamp=[true],formSauv=[],type=[3];
+genFormM=document.getElementById('genForm');
+conf=genFormM.firstElementChild.lastElementChild;
 legend=document.getElementById('legend');
 legendInput=document.getElementById('legendInput');
 legendModif=document.getElementById('legendModif');
+selectChamp=document.getElementById('selectChamp');
 
 function insertAfter(newElement, afterElement) {
     var parent = afterElement.parentNode;
@@ -14,13 +20,72 @@ function insertAfter(newElement, afterElement) {
         parent.insertBefore(newElement, afterElement.nextElementSibling);
     }
 }
+
+function suppression(T,p) {
+	if (p<T.length-1) {
+		for (var q = p; q!=0 ; q--) {
+			T[q]=T[q-1];
+		}
+		T.shift();
+	} else T.pop();
+}
+function insertion(T,x,p) {
+	if (p==0) {
+		T.unshift(x);
+	} else {
+		T.push(T[T.length-1]);
+		for (var q = T.length - 2; q > p; q--) {
+			T[q]=T[q-1];
+		}
+		T[p]=x;
+	}
+}
+//Modification de la legende
+function addEdit(){
+	edit=document.createElement('img');
+	edit.src='../icons/edit-solid.svg';
+	edit.id='edit';
+	legend.parentNode.insertBefore(edit,legend);
+	edit.addEventListener('click',function(){
+		edit.remove();
+		legendInput.value=legend.innerHTML;
+		legendModif.style.display='block';
+		legendInput.select();
+	});
+}
+
+addEdit();
+
+legend.addEventListener('click',function(){
+	edit.remove();
+	legendInput.value=legend.innerHTML;
+	legendModif.style.display='block';
+	legendInput.select();
+});
+
+document.getElementById('save').addEventListener('click',function(e){
+	e.preventDefault();
+	addEdit();
+	legend.innerHTML=legendInput.value;
+	legendModif.style.display='none';
+});
+
+document.getElementById('cancel').addEventListener('click',function(e){
+	e.preventDefault();
+	legendModif.style.display='none';
+	addEdit();
+});
+
+//manipulation des champs
+
 function NouveauModif() {
 	var nouveau ;
 	nouveau = document.createElement('div');
 	nouveau.classList.add('modif');
 	nouveau.innerHTML='\n					<div class="champs">\n						<p>Question 1 : </p>\n						<label><input type="radio" name="default">	Option 1</label>\n					</div>\n					<div class="plus-show">\n						<img src="../icons/plus-solid.svg" class="plus"> <br><br>\n					</div>\n					<div class="cross-show">\n						<img src="../icons/times-circle-solid.svg" class="cross">\n					</div>'
 	return nouveau;
-}
+};
+
 function selectable() {
 	//rend les champs selectable
 	champs=document.querySelectorAll('.champs');
@@ -30,26 +95,36 @@ function selectable() {
 		champs[i].addEventListener('click',function(){
 			this.classList.add('selected');
 			this.nextElementSibling.style.display='block';
-			this.nextElementSibling.nextElementSibling.style.display='block';
-			genForm.show(400);
+			this.nextElementSibling.nextElementSibling.style.display='block';			
 			for (j = 0; j < l; j++) {
 				if (this!==champs[j] ){
 					champs[j].classList.remove('selected');
 					champs[j].nextElementSibling.style.display='none';
 					champs[j].nextElementSibling.nextElementSibling.style.display='none';
+					if (selected[j]) genForm.hide();					
 					selected[j]=false;
-				} else selected[j]=true;
+				} else {
+					selected[j]=true;
+					if (formSauv[j])  conf.innerHTML=formSauv[j];
+					selectChamp.selectedIndex=type[j];
+				}
 			}
+			genForm.show(400);
 		});
 	}
 };
+
 function displaySelected() {
 		champs=document.querySelectorAll('.champs');
+		genForm.hide();
 		for (j = 0; j < champs.length; j++) {
 			if (selected[j] ){
 			champs[j].classList.add('selected');
 			champs[j].nextElementSibling.style.display='block';		
-			champs[j].nextElementSibling.nextElementSibling.style.display='block';		
+			champs[j].nextElementSibling.nextElementSibling.style.display='block';	
+			if(formSauv[j]) conf.innerHTML=formSauv[j];
+			genForm.show(400);
+			selectChamp.selectedIndex=type[j];	
 			} else {
 				champs[j].classList.remove('selected');
 				champs[j].nextElementSibling.style.display='none';
@@ -57,6 +132,7 @@ function displaySelected() {
 			}
 		}
 };
+
 function addChamp(newChamp) {
 	plus=document.querySelectorAll('.plus');
 	modif=document.querySelectorAll('.modif');
@@ -71,6 +147,8 @@ function addChamp(newChamp) {
 				m=plus.length;
 				newChamp.push(false);
 				selected.push(false);
+				insertion(type,3,i);
+				radio();
 				j=0;
 				while(this!=plus[j]) j++;
 				selected[j]=false;
@@ -85,25 +163,27 @@ function addChamp(newChamp) {
 		}
 	}
 }
+
 function addDelete(){
 	cross=document.querySelectorAll('.cross');
-	for (var i = 0; i < cross.length; i++) {
+	l=cross.length;
+	for (var i = 0; i < l; i++) {
 		cross[i].addEventListener('click',function(){
-			this.parentNode.parentNode.remove();
-			selected.shift();
-			for (j = 0; j < selected.length; j++) {
-				selected[j]=false;
-			}
-			genForm.hide(400);
-			displaySelected();
-			selectable();
+			var crossNow=document.querySelectorAll('.cross');
+			if(crossNow.length!=1){
+				this.parentNode.parentNode.remove();
+				selected.shift();
+				newChamp.shift();
+				for (j = 0; j < selected.length; j++) {
+					selected[j]=false;
+				}
+				genForm.hide(400);
+				displaySelected();
+				selectable();
+		} 
 		});
 	}
 }
-displaySelected();
-selectable();
-addDelete();
-addChamp(newChamp);
 document.getElementById('warning').addEventListener('click',function(){
 	for ( i = 0; i < selected.length; i++) {
 		selected[i]=false;
@@ -111,33 +191,222 @@ document.getElementById('warning').addEventListener('click',function(){
 	displaySelected();
 	genForm.hide(400);
 });
-document.getElementById('danger').addEventListener('click',function(){
-	modif=document.querySelectorAll('.modif');
-	i=0;
-	while(!selected[i]) i++;
-	modif[i].remove();
-	selected.shift();
-	for (i = 0; i < selected.length; i++) {
-		selected[i]=false;
+
+displaySelected();
+selectable();
+addDelete();
+addChamp(newChamp);
+
+
+//modifiation formulaire
+
+var a;
+var textLabel,current,placeHolder,formGen,formEvent,lastFormChild,toRemove,nextRemove,place;
+
+function viderGenForm(){
+	formGen=genFormM.firstElementChild;
+	formEvent=formGen.lastElementChild;
+	lastFormChild=formEvent.lastElementChild;
+	toRemove=formEvent.firstElementChild;
+	while(toRemove){
+		nextRemove=toRemove.nextElementSibling;
+		toRemove.remove();
+		toRemove=nextRemove;
 	}
-	genForm.hide(400);
-	displaySelected();
-	selectable();
-});
+};
+textLabel=document.createElement('div');
+textLabel.classList.add('row');
+textLabel.classList.add('form-group');
+textLabel.innerHTML='				  <label class="col-4 col-form-label" for="textinput">label text :</label>\n				  <div class="col-8">\n				  <input id="textinput" name="textinput" type="text" class="form-control">\n				  </div>'
+function modifForm(){
+	selectChamp.addEventListener('change',function(){
+		viderGenForm();
+		a=this.selectedIndex;
+		switch (a) {
+			case  0 ://text input
+				place=document.createElement('div');
+				place.classList.add('row');
+				place.classList.add('form-group');
+				place.innerHTML='				  <label class="col-4 col-form-label" for="placeHolder">place holder :</label>\n				  <div class="col-8">\n				  <input id="placeHolder" name="placeHolder" type="text" class="form-control">\n				  </div>'
+				help=document.createElement('div');
+				help.classList.add('row');
+				help.classList.add('form-group');
+				help.innerHTML='				  <label class="col-4 col-form-label" for="help">Help :</label>\n				  <div class="col-8">\n				  <input id="help" name="help" type="text" class="form-control">\n				  </div>'
+				conf.appendChild(textLabel);
+				conf.appendChild(place);
+				conf.appendChild(help);
+			break;
+			case  1 ://Input
+
+			break;
+			case  2 ://text area
+				defaultText=document.createElement('div');
+				defaultText.classList.add('row');
+				defaultText.classList.add('form-group');
+				defaultText.innerHTML='				  <label class="col-4 col-form-label" for="defaultText">default text :</label>\n				  <div class="col-8">\n				  <input id="defaultText" name="defaultText" type="text" class="form-control">\n				  </div>'
+				conf.appendChild(textLabel);
+				conf.appendChild(defaultText);
+			break;
+			case  3 ://radio
+				radio();
+			break;
+			case  4 ://checkbox
+
+			break;
+			case  5 ://select
+				conf.innerHTML='<div class="form-group row"><label for="question" class="col-form-label col-4">Question :</label><div class="col-8"><input type="text" name="question" id="question" class="form-control"></div></div><br><img src="../icons/angle-left-solid.svg" id="left"><img src="../icons/angle-left-clair.svg" id="leftClair"><img src="../icons/minus-solid.svg" id="minus"><img src="../icons/minus-clair.svg" id="minusClair"><img src="../icons/angle-right-solid.svg" id="right"><img src="../icons/plus-solid-black.svg" id="plusBlack"><div class="form-group option row"><label for="option1" class="col-form-label col-4">Option 01 :</label><div class=" col-8"><input type="text" name="option1" id="option1" class="form-control"></div></div>';
+				right=document.getElementById('right');
+				plusBlack=document.getElementById('plusBlack');
+				left=document.getElementById('left');
+				leftClair=document.getElementById('leftClair');
+				minus=document.getElementById('minus');
+				minusClair=document.getElementById('minusClair');
+				right.style.display='none';
+				minus.style.display='none';
+				left.style.display='none';
+				navigationOption();
+			break;
+			case  6 ://button
+
+			break;
+		}
+
+	});
+};
+modifForm();
 document.getElementById('info').addEventListener('click',function(){
-	
+			c=selectChamp.selectedIndex;
+			b=0;
+			while(!selected[b]) b++;
+			formSauv[b]=conf.innerHTML;
+			type[b]=c;
+			switch(c) {
+				case 0:
+					name=document.getElementById('textinput').value;
+					placeH=document.getElementById('placeHolder').value;
+					champs[b].classList.add('form-group');
+					champs[b].classList.add('row');
+					champs[b].innerHTML='  <label class="col-2 col-form-label" for="'+name+'">'+name+' '+((name)?':':'')+'</label>  \n  <div class="col-8">\n  <input id="'+name+'" name="'+name+'" type="text" placeholder="'+placeH+'" class="form-control input-md">\n  <span class="help-block">'+document.getElementById('help').value+'</span>  \n  </div>'	
+				break;
+				case 2 : 
+					name=document.getElementById('textinput').value;
+					def=document.getElementById('defaultText').value;
+					champs[b].classList.add('form-group');
+					champs[b].classList.remove('form-horizontal');
+					champs[b].innerHTML='	<label class="col-form-label" for="'+name+'">'+name+' '+((name)?':':'')+'</label>\n 	<textarea id="'+name+'" class="form-control">'+def+'</textarea>';
+				break;
+				case 3:
+					question=document.createElement('p');
+					question.innerHTML=document.getElementById('question').value;
+					champs[b].innerHTML='';
+					champs[b].appendChild(question);
+					optionInput=document.querySelectorAll('.option');
+					name=document.getElementById('name').value;
+					for (var i = 0; i < optionInput.length; i++) {
+						label=document.createElement('label');
+						label.innerHTML='<input type="radio" name='+name+'>  '+optionInput[i].lastElementChild.firstElementChild.value;
+						champs[b].appendChild(label);
+					}
+				break;
+				case 5:
+					question=document.createElement('p');
+					question.innerHTML=document.getElementById('question').value;
+					sel=document.createElement('select');
+					sel.classList.add('form-control');
+					champs[b].innerHTML='';
+					champs[b].appendChild(question);
+					champs[b].appendChild(sel);
+					optionInput=document.querySelectorAll('.option');
+					for (var i = 0; i < optionInput.length; i++) {
+						option=document.createElement('option');
+						option.innerHTML='<option>'+optionInput[i].lastElementChild.firstElementChild.value+'</option>';
+						sel.appendChild(option);
+					}
+				break;
+			}
+
 });
-legend.addEventListener('click',function(){
-	legendInput.value=legend.innerHTML;
-	legendModif.style.display='block';
-	legendInput.select();
-});
-document.getElementById('save').addEventListener('click',function(e){
-	e.preventDefault();
-	legend.innerHTML=legendInput.value;
-	legendModif.style.display='none';
-});
-document.getElementById('cancel').addEventListener('click',function(e){
-	e.preventDefault();
-	legendModif.style.display='none';
-});
+
+function radio(){
+	conf.innerHTML='<div class="form-group row"><label for="question" class="col-form-label col-4">Question :</label><div class="col-8"><input type="text" name="question" id="question" class="form-control"></div></div><div class="form-group row"><label for="name" class="col-form-label col-4">Name :</label><div class="col-8"><input type="text" name="name" id="name" class="form-control"></div></div><br><img src="../icons/angle-left-solid.svg" id="left"><img src="../icons/angle-left-clair.svg" id="leftClair"><img src="../icons/minus-solid.svg" id="minus"><img src="../icons/minus-clair.svg" id="minusClair"><img src="../icons/angle-right-solid.svg" id="right"><img src="../icons/plus-solid-black.svg" id="plusBlack"><br/><div class="form-group option row"><label for="option1" class="col-form-label col-4">Option 01 :</label><div class=" col-8"><input type="text" name="option1" id="option1" class="form-control"></div></div>'
+	right=document.getElementById('right');
+	plusBlack=document.getElementById('plusBlack');
+	left=document.getElementById('left');
+	leftClair=document.getElementById('leftClair');
+	minus=document.getElementById('minus');
+	minusClair=document.getElementById('minusClair');
+	right.style.display='none';
+	minus.style.display='none';
+	left.style.display='none';
+	navigationOption();
+}
+radio();
+function navigationOption(){
+	plusBlack.addEventListener('click',function(){
+		optionInput=document.querySelectorAll('.option');
+		l=optionInput.length;
+		newOption=document.createElement('div');
+		newOption.classList.add('form-group');
+		newOption.classList.add('row');
+		newOption.classList.add('option');
+		newOption.innerHTML='<label for="Option'+(l+1)+'" class="col-form-label col-4">Option 0'+(l+1)+' :</label><div class=" col-8"><input type="text" name="Option'+(l+1)+'" id="Option'+(l+1)+'" class="form-control"></div>';
+		insertAfter(newOption,optionInput[l-1]);
+		optionInput[l-1].style.display='none';
+		if (l==1) {
+			minusClair.style.display='none';
+			minus.style.display='inline';
+			leftClair.style.display='none';
+			left.style.display='inline';
+		}
+		newOption.lastElementChild.firstElementChild.select();
+		selectable();
+	});
+	minus.addEventListener('click',function(){
+		optionInput=document.querySelectorAll('.option');
+		l=optionInput.length;
+		optionInput[l-1].remove();
+		optionInput[l-2].style.display='';
+		optionInput[l-2].lastElementChild.firstElementChild.select();
+		if(l==2){
+			minusClair.style.display='inline';
+			minus.style.display='none';	
+			leftClair.style.display='inline';
+			left.style.display='none';	
+		}
+		selectable();
+	});
+	right.addEventListener('click',function(){
+		optionInput=document.querySelectorAll('.option');
+		l=0;
+		while(optionInput[l].style.display=='none') l++;
+		optionInput[l].style.display='none';
+		optionInput[l+1].style.display='';
+		optionInput[l+1].lastElementChild.firstElementChild.select();
+		left.style.display='inline';
+		leftClair.style.display='none';
+		if (l==optionInput.length-2) {
+			right.style.display='none';
+			plusBlack.style.display='inline';
+			minusClair.style.display='none';
+			minus.style.display='inline';
+		}
+	});
+	left.addEventListener('click',function(){
+		optionInput=document.querySelectorAll('.option');
+		l=0;
+		while(optionInput[l].style.display=='none') l++;
+		optionInput[l].style.display='none';
+		optionInput[l-1].style.display='';
+		optionInput[l-1].lastElementChild.firstElementChild.select();
+		if (l==1) {
+			left.style.display='none';
+			leftClair.style.display='inline';
+		}
+		if (l==optionInput.length-1) {
+			right.style.display='inline';
+			plusBlack.style.display='none';
+		}
+		minusClair.style.display='inline';
+		minus.style.display='none';	
+	});
+}
