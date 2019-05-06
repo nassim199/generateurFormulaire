@@ -1,9 +1,8 @@
 
 //declaration de variables et initialisation
 
-var champs,plus,modif,nouveauModif,genForm=$('#genForm'),legend,legendInput,legendModif,cross,edit,genFormM,conf,selectChamp;
-var i,k,j,l,m;
-var selected=[true],newChamp=[true],formSauv=[],type=[3];
+genForm=$('#genForm');
+var selected=[true],newChamp=[true],type=[2];
 genFormM=document.getElementById('genForm');
 conf=genFormM.firstElementChild.lastElementChild;
 legend=document.getElementById('legend');
@@ -105,8 +104,9 @@ function selectable() {
 					selected[j]=false;
 				} else {
 					selected[j]=true;
-					if (formSauv[j])  conf.innerHTML=formSauv[j];
 					selectChamp.selectedIndex=type[j];
+					viderGenForm();
+					modificationForm(type[j]);
 				}
 			}
 			genForm.show(400);
@@ -122,7 +122,7 @@ function displaySelected() {
 			champs[j].classList.add('selected');
 			champs[j].nextElementSibling.style.display='block';		
 			champs[j].nextElementSibling.nextElementSibling.style.display='block';	
-			if(formSauv[j]) conf.innerHTML=formSauv[j];
+			modificationForm(type[j]);
 			genForm.show(400);
 			selectChamp.selectedIndex=type[j];	
 			} else {
@@ -147,7 +147,7 @@ function addChamp(newChamp) {
 				m=plus.length;
 				newChamp.push(false);
 				selected.push(false);
-				insertion(type,3,i);
+				insertion(type,2,i);
 				radio();
 				j=0;
 				while(this!=plus[j]) j++;
@@ -200,8 +200,6 @@ addChamp(newChamp);
 
 //modifiation formulaire
 
-var a;
-var textLabel,current,placeHolder,formGen,formEvent,lastFormChild,toRemove,nextRemove,place;
 
 function viderGenForm(){
 	formGen=genFormM.firstElementChild;
@@ -222,55 +220,7 @@ function modifForm(){
 	selectChamp.addEventListener('change',function(){
 		viderGenForm();
 		a=this.selectedIndex;
-		switch (a) {
-			case  0 ://text input
-				place=document.createElement('div');
-				place.classList.add('row');
-				place.classList.add('form-group');
-				place.innerHTML='				  <label class="col-4 col-form-label" for="placeHolder">place holder :</label>\n				  <div class="col-8">\n				  <input id="placeHolder" name="placeHolder" type="text" class="form-control">\n				  </div>'
-				help=document.createElement('div');
-				help.classList.add('row');
-				help.classList.add('form-group');
-				help.innerHTML='				  <label class="col-4 col-form-label" for="help">Help :</label>\n				  <div class="col-8">\n				  <input id="help" name="help" type="text" class="form-control">\n				  </div>'
-				conf.appendChild(textLabel);
-				conf.appendChild(place);
-				conf.appendChild(help);
-			break;
-			case  1 ://Input
-
-			break;
-			case  2 ://text area
-				defaultText=document.createElement('div');
-				defaultText.classList.add('row');
-				defaultText.classList.add('form-group');
-				defaultText.innerHTML='				  <label class="col-4 col-form-label" for="defaultText">default text :</label>\n				  <div class="col-8">\n				  <input id="defaultText" name="defaultText" type="text" class="form-control">\n				  </div>'
-				conf.appendChild(textLabel);
-				conf.appendChild(defaultText);
-			break;
-			case  3 ://radio
-				radio();
-			break;
-			case  4 ://checkbox
-
-			break;
-			case  5 ://select
-				conf.innerHTML='<div class="form-group row"><label for="question" class="col-form-label col-4">Question :</label><div class="col-8"><input type="text" name="question" id="question" class="form-control"></div></div><br><img src="../icons/angle-left-solid.svg" id="left"><img src="../icons/angle-left-clair.svg" id="leftClair"><img src="../icons/minus-solid.svg" id="minus"><img src="../icons/minus-clair.svg" id="minusClair"><img src="../icons/angle-right-solid.svg" id="right"><img src="../icons/plus-solid-black.svg" id="plusBlack"><div class="form-group option row"><label for="option1" class="col-form-label col-4">Option 01 :</label><div class=" col-8"><input type="text" name="option1" id="option1" class="form-control"></div></div>';
-				right=document.getElementById('right');
-				plusBlack=document.getElementById('plusBlack');
-				left=document.getElementById('left');
-				leftClair=document.getElementById('leftClair');
-				minus=document.getElementById('minus');
-				minusClair=document.getElementById('minusClair');
-				right.style.display='none';
-				minus.style.display='none';
-				left.style.display='none';
-				navigationOption();
-			break;
-			case  6 ://button
-
-			break;
-		}
-
+		modificationForm(a);
 	});
 };
 modifForm();
@@ -278,24 +228,36 @@ document.getElementById('info').addEventListener('click',function(){
 			c=selectChamp.selectedIndex;
 			b=0;
 			while(!selected[b]) b++;
-			formSauv[b]=conf.innerHTML;
 			type[b]=c;
 			switch(c) {
 				case 0:
 					name=document.getElementById('textinput').value;
-					placeH=document.getElementById('placeHolder').value;
+					if(document.getElementById('placeHolder'))placeH=document.getElementById('placeHolder').value;
+					else placeH=null;
 					champs[b].classList.add('form-group');
 					champs[b].classList.add('row');
-					champs[b].innerHTML='  <label class="col-2 col-form-label" for="'+name+'">'+name+' '+((name)?':':'')+'</label>  \n  <div class="col-8">\n  <input id="'+name+'" name="'+name+'" type="text" placeholder="'+placeH+'" class="form-control input-md">\n  <span class="help-block">'+document.getElementById('help').value+'</span>  \n  </div>'	
+					champs[b].innerHTML='  <label class="col-2 col-form-label" for="'+name+'">'+name+' '+((name)?':':'')+'</label>  \n  <div class="col-8">\n  <input id="'+name+'" name="'+name+'" type="text" '+((placeH)?'placeholder="'+placeH+'"':'')+' class="form-control input-md">\n  <span class="help-block">'+document.getElementById('help').value+'</span>  \n  </div>'	
+					p=selectType.selectedIndex;
+					if (p!=0) {
+						inputType=champs[b].firstElementChild.nextElementSibling.firstElementChild;
+						if (p==1)
+							inputType.type='password';
+						else if (p==2)
+							inputType.type='date';
+						else if (p==3)
+							inputType.type='heure';
+						else if (p==4)
+							inputType.type='range';
+					}
 				break;
-				case 2 : 
+				case 1 : 
 					name=document.getElementById('textinput').value;
 					def=document.getElementById('defaultText').value;
 					champs[b].classList.add('form-group');
 					champs[b].classList.remove('form-horizontal');
 					champs[b].innerHTML='	<label class="col-form-label" for="'+name+'">'+name+' '+((name)?':':'')+'</label>\n 	<textarea id="'+name+'" class="form-control">'+def+'</textarea>';
 				break;
-				case 3:
+				case 2:
 					question=document.createElement('p');
 					question.innerHTML=document.getElementById('question').value;
 					champs[b].innerHTML='';
@@ -308,7 +270,19 @@ document.getElementById('info').addEventListener('click',function(){
 						champs[b].appendChild(label);
 					}
 				break;
-				case 5:
+				case 3 :
+					question=document.createElement('p');
+					question.innerHTML=document.getElementById('question').value;
+					champs[b].innerHTML='';
+					champs[b].appendChild(question);
+					optionInput=document.querySelectorAll('.option');
+					for (var i = 0; i < optionInput.length; i++) {
+						label=document.createElement('label');
+						label.innerHTML='<input type="checkbox" name='+optionInput[i].lastElementChild.firstElementChild.value+'>  '+optionInput[i].firstElementChild.nextElementSibling.firstElementChild.value;
+						champs[b].appendChild(label);
+					}
+				break;
+				case 4 :
 					question=document.createElement('p');
 					question.innerHTML=document.getElementById('question').value;
 					sel=document.createElement('select');
@@ -338,10 +312,11 @@ function radio(){
 	right.style.display='none';
 	minus.style.display='none';
 	left.style.display='none';
-	navigationOption();
+	navigationOption(true);
 }
 radio();
-function navigationOption(){
+function navigationOption(x){
+	if(x){
 	plusBlack.addEventListener('click',function(){
 		optionInput=document.querySelectorAll('.option');
 		l=optionInput.length;
@@ -361,6 +336,7 @@ function navigationOption(){
 		newOption.lastElementChild.firstElementChild.select();
 		selectable();
 	});
+	}
 	minus.addEventListener('click',function(){
 		optionInput=document.querySelectorAll('.option');
 		l=optionInput.length;
@@ -409,4 +385,153 @@ function navigationOption(){
 		minusClair.style.display='inline';
 		minus.style.display='none';	
 	});
+}
+function checkboxName(optionCheck) {
+	input=optionCheck.firstElementChild.nextElementSibling.firstElementChild
+	input.addEventListener('change',function(){
+		optionCheck.lastElementChild.firstElementChild.value=input.value;
+	});
+}
+function viderType(){
+	toRemove=types.nextElementSibling;
+	while(toRemove){
+		nextRemove=toRemove.nextElementSibling;
+		toRemove.remove();
+		toRemove=nextRemove;
+	}
+};
+function inputType(){
+	viderType();
+	textLabel=document.createElement('div');
+	textLabel.classList.add('row');
+	textLabel.classList.add('form-group');
+	textLabel.innerHTML='				  <label class="col-4 col-form-label" for="textinput">label text :</label>\n				  <div class="col-8">\n				  <input id="textinput" name="textinput" type="text" class="form-control">\n				  </div>'
+	place=document.createElement('div');
+	place.classList.add('row');
+	place.classList.add('form-group');
+	place.innerHTML='				  <label class="col-4 col-form-label" for="placeHolder">place holder :</label>\n				  <div class="col-8">\n				  <input id="placeHolder" name="placeHolder" type="text" class="form-control">\n				  </div>'
+	help=document.createElement('div');
+	help.classList.add('row');
+	help.classList.add('form-group');
+	help.innerHTML='				  <label class="col-4 col-form-label" for="help">Help :</label>\n				  <div class="col-8">\n				  <input id="help" name="help" type="text" class="form-control">\n				  </div>'
+	conf.appendChild(textLabel);
+	p=selectType.selectedIndex;
+	if (p===0 || p===1) conf.appendChild(place);
+	conf.appendChild(help);
+}
+function modificationForm(a) {
+		switch (a) {
+			case  0 ://input
+				types=document.createElement('div');
+				types.classList.add('row');
+				types.classList.add('form-group');
+				typeLabel=document.createElement('label');
+				typeLabel.innerHTML='Type :';
+				typeLabel.for='type';
+				typeLabel.classList.add('col-form-label');
+				typeLabel.classList.add('col-4');
+				types.appendChild(typeLabel);
+				selectType=document.createElement('select');
+				selectType.id='Type';
+				selectType.classList.add('col-7');
+				selectType.classList.add('form-control');
+				typeS=['text','password','date','heure','range'];
+				for (var p = 0; p < typeS.length; p++) {
+					optionType=document.createElement('option');
+					optionType.innerHTML=typeS[p];
+					selectType.appendChild(optionType);
+				}
+				types.appendChild(selectType);
+				conf.appendChild(types);
+				inputType();
+				types.addEventListener('change',function(){
+					inputType();
+				});
+			break;
+			case  1 ://text area
+				defaultText=document.createElement('div');
+				defaultText.classList.add('row');
+				defaultText.classList.add('form-group');
+				defaultText.innerHTML='				  <label class="col-4 col-form-label" for="defaultText">default text :</label>\n				  <div class="col-8">\n				  <input id="defaultText" name="defaultText" type="text" class="form-control">\n				  </div>'
+				textLabel=document.createElement('div');
+				textLabel.classList.add('row');
+				textLabel.classList.add('form-group');
+				textLabel.innerHTML='				  <label class="col-4 col-form-label" for="textinput">label text :</label>\n				  <div class="col-8">\n				  <input id="textinput" name="textinput" type="text" class="form-control">\n				  </div>'
+				conf.appendChild(textLabel);
+				conf.appendChild(defaultText);
+			break;
+			case  2 ://radio
+				radio();
+			break;
+			case  3 ://checkbox
+				conf.innerHTML='<div class="form-group row"><label for="question" class="col-form-label col-4">Question :</label><div class="col-8"><input type="text" name="question" id="question" class="form-control"></div></div><br><img src="../icons/angle-left-solid.svg" id="left"><img src="../icons/angle-left-clair.svg" id="leftClair"><img src="../icons/minus-solid.svg" id="minus"><img src="../icons/minus-clair.svg" id="minusClair"><img src="../icons/angle-right-solid.svg" id="right"><img src="../icons/plus-solid-black.svg" id="plusBlack"><div class="form-group option row"><label for="option1" class="col-form-label col-4">Option 01 :</label><div class=" col-8"><input type="text" name="option1" id="option1" class="form-control"></div><label for="name1" class="col-form-label col-4">Name 01 :</label><div class=" col-8"><input type="text" name="name1" id="name1" class="form-control" placeholder="par defaut: le nom de l\'option"></div></div>';
+				checkboxName(document.querySelector('.option'));
+				right=document.getElementById('right');
+				plusBlack=document.getElementById('plusBlack');
+				left=document.getElementById('left');
+				leftClair=document.getElementById('leftClair');
+				minus=document.getElementById('minus');
+				minusClair=document.getElementById('minusClair');
+				right.style.display='none';
+				minus.style.display='none';
+				left.style.display='none';
+				navigationOption(false);
+				plusBlack.addEventListener('click',function(){
+					optionInput=document.querySelectorAll('.option');
+					l=optionInput.length;
+					newOption=document.createElement('div');
+					newOption.classList.add('form-group');
+					newOption.classList.add('row');
+					newOption.classList.add('option');
+					newOption.innerHTML='<label for="Option'+(l+1)+'" class="col-form-label col-4">Option 0'+(l+1)+' :</label><div class=" col-8"><input type="text" name="Option'+(l+1)+'" id="Option'+(l+1)+'" class="form-control"></div><label for="Name'+(l+1)+'" class="col-form-label col-4">Name 0'+(l+1)+' :</label><div class=" col-8"><input type="text" name="Name'+(l+1)+'" id="Name'+(l+1)+'" class="form-control" placeholder="par defaut: le nom de l\'option"></div>';
+					insertAfter(newOption,optionInput[l-1]);
+					checkboxName(newOption);
+					optionInput[l-1].style.display='none';
+					if (l==1) {
+						minusClair.style.display='none';
+						minus.style.display='inline';
+						leftClair.style.display='none';
+						left.style.display='inline';
+					}
+					newOption.firstElementChild.nextElementSibling.firstElementChild.select();
+					selectable();					
+				});
+			break;
+			case  4 ://select
+				conf.innerHTML='<div class="form-group row"><label for="question" class="col-form-label col-4">Question :</label><div class="col-8"><input type="text" name="question" id="question" class="form-control"></div></div><br><img src="../icons/angle-left-solid.svg" id="left"><img src="../icons/angle-left-clair.svg" id="leftClair"><img src="../icons/minus-solid.svg" id="minus"><img src="../icons/minus-clair.svg" id="minusClair"><img src="../icons/angle-right-solid.svg" id="right"><img src="../icons/plus-solid-black.svg" id="plusBlack"><div class="form-group option row"><label for="option1" class="col-form-label col-4">Option 01 :</label><div class=" col-8"><input type="text" name="option1" id="option1" class="form-control"></div></div>';
+				right=document.getElementById('right');
+				plusBlack=document.getElementById('plusBlack');
+				left=document.getElementById('left');
+				leftClair=document.getElementById('leftClair');
+				minus=document.getElementById('minus');
+				minusClair=document.getElementById('minusClair');
+				right.style.display='none';
+				minus.style.display='none';
+				left.style.display='none';
+				navigationOption(true);
+			break;
+			case  6 ://button
+
+			break;
+		}
+
+}
+function selectInformation(a) {
+	switch(a) {
+		case 0 :
+
+		break;
+		case 0 :
+
+		break;
+		case 0 :
+
+		break;
+		case 0 :
+
+		break;
+		case 0 :
+
+		break;
+	}
 }

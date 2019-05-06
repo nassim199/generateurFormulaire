@@ -70,7 +70,7 @@ body
 	border: 1px #b3b3b3 solid;
 	border-radius: 5px/5px;
 }
-.champs input[type="radio"]
+.champs input[type="radio"], .champs input[type="checkbox"]
 {
 	margin-left: 2%;
 }
@@ -120,10 +120,7 @@ label
 }
 .cross:hover 
 {
-	width: 27px;
-	height: 27px;
-	top: -7px;
-	right: 1px;
+	transform: scale(1.1);
 }
 .cross-show
 {
@@ -152,9 +149,7 @@ label
 }
 #right:hover, #plusBlack:hover, #left:hover, #minus:hover
 {
-	width: 27px;
-	height: 27px;
-	bottom: 3px;
+	transform: scale(1.1);
 }
 #leftClair, #minusClair
 {
